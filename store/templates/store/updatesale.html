@@ -1,0 +1,81 @@
+{% extends "store/base.html" %}
+
+{% block content %}
+<style>
+    .vertical-center {
+        min-height: 100%;  /* Fallback for browsers do NOT support vh unit */
+        min-height: 100vh; /* These two lines are counted as one :-)       */
+        display: flex;
+        align-items: center;
+    }
+</style> 
+
+<div class="container" style="margin-top: 2%;">
+    <div class="alert alert-primary" role="alert">
+        <center>
+                <h5>{{msg}}</h5>  
+        </center>
+    </div>
+</div>
+<div class="jumbotron vertical-center" style="margin-top: -5%;">
+    <div class="container">
+        <div class="row">
+            <div class="col-8 offset-2" style="padding: 2%;border: solid #0d6efd;border-radius: 5px;">
+                <h1 style="text-align: center;">Update sales</h1>
+                <form method="POST" accept="/updatesale">
+                    <div class="form-group">
+                        {% csrf_token %}
+                        {{ salefrom.as_p }}
+                        <p>
+                            <label for="quantityNo">Stock Available</label>
+                            <input class="form-control" type="text" name="quantityNo" id="quantityNo" disabled="disabled">
+                            <input type="hidden" name="quantity" id='quantity'>
+                        </p>
+                        <button class="btn btn-primary" type="submit">save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container" style="margin-top: 2%;display: none;">
+    <div class="row">
+        <div class="col-10 offset-1">
+            <table class="table" style="text-align: center;">
+                <thead>
+                    <tr>
+                      <th scope="col">Items</th>
+                      <th scope="col">quantity</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for i in addstore %} 
+                        <tr id="{{i.item.item_name}}">
+                            <td>{{i.item.item_name}}</td>
+                            <td>{{i.quantityNo}} {{i.quantityUnit}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>            
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('id_soldquantity').setAttribute('min', 0);
+    window.setTimeout(function() {
+        $(".alert").fadeTo(500, 0).slideUp(500, function(){
+            $(this).remove(); 
+        });
+    }, 2000);
+    document.getElementById('id_item').addEventListener("change",function fun(){
+        x = document.getElementById(document.getElementById('id_item').value).children[1].innerHTML
+        document.getElementById('quantityNo').value = x
+        document.getElementById('quantity').value = x.split(' ')[0]
+        document.getElementById('id_soldquantity').setAttribute('max',document.getElementById(document.getElementById('id_item').value).children[1].innerHTML.split(' ')[0]) 
+    })
+    document.getElementById('id_soldquantity').classList.add("form-control")
+    document.getElementById('id_item').classList.add("form-control")
+</script>  
+{% endblock content %}

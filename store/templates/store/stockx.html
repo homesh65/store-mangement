@@ -1,0 +1,162 @@
+{% extends "store/base.html" %}
+
+{% block content %}
+<style>
+    .vertical-center {
+        min-height: 100%;  /* Fallback for browsers do NOT support vh unit */
+        min-height: 100vh; /* These two lines are counted as one :-)       */
+        display: flex;
+        align-items: center;
+    }
+</style>
+
+
+<div class="container" style="margin-top: 2%;">
+    <div class="alert alert-primary" role="alert">
+        <center>
+                <h5>{{error}}</h5>  
+        </center>
+    </div>
+</div>
+
+<div class="jumbotron vertical-center" style="height: 70%;" >
+    <div class="container">
+        <div class="row">
+            <div class="col-5" style="padding: 2%;border: solid #0d6efd;border-radius: 5px;">
+                <h1 style="text-align: center;">Add a new item</h1>
+                <form method="POST" action="/item/">
+                    <div class="form-group">
+                        {% csrf_token %}
+                        <p>
+                            <label for="catagories">Select Item Name to update</label>
+                            <select class="form-control" name="newItem" id="newItem"></select>
+                        </p>
+                        {{ store_form.as_p }}
+                        <input class="btn btn-primary" type="submit" value="save" id="itemButton">
+                    </div>
+                </form>
+            </div>
+            <div class="col-1"></div>
+            <div class="col-6" style="padding: 2%;border: solid #0d6efd;border-radius: 5px;">
+                <h1 style="text-align: center;">Add/Update stock</h1>
+                <form method="POST" accept="/stock">
+                    <div class="form-group">
+                        <p>
+                            <label for="catagories">catagories</label>
+                            <input class="form-control" type="text" name="catagories" id="idcatagories" disabled>
+                        </p>
+                        {% csrf_token %}
+                        {{ addstoreform.as_p }}
+                        <input class="btn btn-primary" type="submit" value="Save" id="save">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container" style="margin-top: 2%;display:none">
+    <div class="row">
+        <div class="col-10 offset-1">
+            <table class="table" style="text-align: center;">
+                <thead>
+                    <tr>
+                      <th scope="col">Items</th>
+                      <th scope="col">catagories</th>
+                      <th scope="col">quantity</th>
+                      <th scope="col">cost Price</th>
+                      <th scope="col">selling Price</th>
+                      <th scope="col">edit</th>
+                      <th scope="col">delete</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for i in addstore %} 
+                        <tr id="{{i.item.item_name}}">
+                            <td>{{i.item.item_name}}</td>
+                            <td>{{i.item.catagories}}</td>
+                            <td>{{i.quantityNo}} {{i.quantityUnit}}</td>
+                            <td>{{i.costPrice}}</td>
+                            <td>{{i.sellingPrice}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>            
+        </div>
+    </div>
+</div>
+
+<div class="container" style="margin-top: 2%;display: none;">
+    <div class="row">
+        <div class="col-10 offset-1">
+            <table class="table" style="text-align: center;">
+                <thead>
+                    <tr>
+                      <th scope="col">Items</th>
+                      <th scope="col">catagories</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for i in store %} 
+                        <tr id="item_{{i.item_name}}">
+                            <td>{{i.item_name}}</td>
+                            <td>{{i.catagories}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>            
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('id_catagories').classList.add("form-control")
+    document.getElementById('id_item_name').classList.add("form-control")
+    document.getElementById('id_item').classList.add("form-control")
+    document.getElementById('id_quantityNo').classList.add("form-control")
+    document.getElementById('id_quantityUnit').classList.add("form-control")
+    document.getElementById('id_costPrice').classList.add("form-control")
+    document.getElementById('id_sellingPrice').classList.add("form-control")
+    window.setTimeout(function() {
+        document.getElementById('newItem').innerHTML = document.getElementById('id_item').innerHTML
+        document.getElementById('id_item_name').removeAttribute('required')
+        $(".alert").fadeTo(500, 0).slideUp(500, function(){
+            $(this).remove(); 
+        });
+    }, 2000);
+    document.getElementById('id_item_name').addEventListener("click", function eraser() {
+        document.getElementById('newItem').innerHTML = document.getElementById('id_item').innerHTML
+        document.getElementById('id_catagories').value = "green"
+        document.getElementById('itemButton').value = "Save"
+    })
+    document.getElementById('newItem').addEventListener("change",function pen(){
+        try { 
+            document.getElementById('id_catagories').value = document.getElementById('item_'+document.getElementById("newItem").value).children[1].innerHTML
+            document.getElementById('itemButton').value = "Change"
+        } catch (error) {
+            
+        }
+    })
+    document.getElementById('id_item').addEventListener("change",function fun(){
+        try {
+            x = document.getElementById('id_item').value
+            x = document.getElementById(x).children
+            temp = x[2].innerText.split(' ')
+            document.getElementById('id_quantityNo').value = temp[0] 
+            document.getElementById('idcatagories').value = x[1].innerText
+            document.getElementById('id_quantityUnit').value = temp[1]
+            document.getElementById('id_costPrice').value = x[3].innerText
+            document.getElementById('id_sellingPrice').value = x[4].innerText
+            document.getElementById('save').value = "Edit"
+        } catch (error) {
+            document.getElementById('id_quantityNo').value = "" 
+            document.getElementById('idcatagories').value = ""
+            document.getElementById('id_quantityUnit').value = ""
+            document.getElementById('id_costPrice').value = ""
+            document.getElementById('id_sellingPrice').value = ""
+            document.getElementById('save').value = "Save"
+        }
+    })
+</script>
+{% endblock content %}

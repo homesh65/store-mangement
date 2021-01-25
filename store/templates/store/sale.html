@@ -1,0 +1,42 @@
+{% extends "store/base.html" %}
+
+{% block content %}
+<style>
+    .vertical-center {
+        min-height: 100%;  /* Fallback for browsers do NOT support vh unit */
+        min-height: 100vh; /* These two lines are counted as one :-)       */
+        display: flex;
+        align-items: center;
+    }
+</style>
+
+<div class="container" style="margin-top: 2%;">
+    <div class="row">
+        <div class="col-10 offset-1">
+            <table class="table" style="text-align: center;">
+                <thead>
+                    <tr>
+                      <th scope="col">Items</th>
+                      <th scope="col">catagories</th>
+                      <th scope="col">sold quantity</th>
+                      <th scope="col">Sold on</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for i in sale %} 
+                        <tr id="{{i.item}}">
+                            <td>{{i.item}}</td>
+                            <td>{{i.item.item.catagories}}</td>
+                            <td>{{i.soldquantity}}</td>
+                            <td>{{i.created_at}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>            
+        </div>
+    </div>
+</div>
+<script>
+    
+</script>
+{% endblock content %}
