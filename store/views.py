@@ -8,8 +8,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Store, AddStore, Sale
 from django.core import serializers
 from django.db.models import Count
-
-json_serializer = serializers.get_serializer("json")()
+import datetime
 
 def signupuser(request):
     if(request.method == 'GET'):
@@ -89,8 +88,23 @@ def stock(request):
 
 @login_required
 def sale(request):
-    sale = Sale.objects.all()
-    return render(request, 'store/sale.html',{'sale': sale})
+    if request.method == 'GET':
+        cdate = datetime.datetime.now().date()
+        s = Sale.objects.filter(created_at__date=cdate)
+        if(list(s) == []):
+            return render(request, 'store/sale.html',{'sale': s, 'temp':True, 'msg':'Today no sales are made yet!'})
+        else:
+            return render(request, 'store/sale.html',{'sale': s, 'temp':False, 'cdate': cdate})
+    else:
+        s = Sale.objects.filter(created_at__date=request.POST['cdate'])
+        if(list(s) == []):
+            if( datetime.datetime.now().date().strftime("%Y-%m-%d") == request.POST['cdate'] ):
+                return render(request, 'store/sale.html',{'sale': s, 'temp':True, 'msg':'Today no sales are made yet!'})
+            else:
+                return render(request, 'store/sale.html',{'sale': s, 'temp':True, 'msg': "No sales made on "+request.POST['cdate']+" day"})
+        else:
+            return render(request, 'store/sale.html',{'sale': s, 'temp':False, 'cdate':request.POST['cdate']})
+
 
 @login_required
 def item(request):

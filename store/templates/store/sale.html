@@ -11,28 +11,41 @@
 </style>
 
 <div class="container" style="margin-top: 2%;">
+    <form action="/sale/" method="post">
+        {% csrf_token %}
+        <label for="cdate">Choose the date to get sales report: </label>
+        <input type="date" name="cdate" id="cdate">
+        <input type="submit" value="Get">
+    </form>
     <div class="row">
         <div class="col-10 offset-1">
-            <table class="table" style="text-align: center;">
-                <thead>
-                    <tr>
-                      <th scope="col">Items</th>
-                      <th scope="col">catagories</th>
-                      <th scope="col">sold quantity</th>
-                      <th scope="col">Sold on</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {% for i in sale %} 
-                        <tr id="{{i.item}}">
-                            <td>{{i.item}}</td>
-                            <td>{{i.item.item.catagories}}</td>
-                            <td>{{i.soldquantity}}</td>
-                            <td>{{i.created_at}}</td>
+            {% if temp %}
+                <div style="text-align: center;">
+                    {{msg}}
+                </div>
+            {% else %}
+                <h3 style="text-align: center;">Sales on {{cdate}}</h3>
+                <table class="table" style="text-align: center;">
+                    <thead>
+                        <tr>
+                        <th scope="col">Items</th>
+                        <th scope="col">catagories</th>
+                        <th scope="col">sold quantity</th>
+                        <th scope="col">Sold on</th>
                         </tr>
-                    {% endfor %}
-                </tbody>
-            </table>            
+                    </thead>
+                    <tbody>
+                        {% for i in sale %} 
+                            <tr id="{{i.item}}">
+                                <td>{{i.item}}</td>
+                                <td>{{i.item.item.catagories}}</td>
+                                <td>{{i.soldquantity}}</td>
+                                <td>{{i.created_at}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
         </div>
     </div>
 </div>
