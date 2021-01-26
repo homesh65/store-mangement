@@ -1,4 +1,4 @@
-{% extends "store/base.html" %}
+{% include "store/baseadmin.html" %}
 
 {% block content %}
 <style>
@@ -9,14 +9,15 @@
         align-items: center;
     }
 </style> 
-
-<div class="container" style="margin-top: 2%;">
-    <div class="alert alert-primary" role="alert">
-        <center>
-                <h5>{{msg}}</h5>  
-        </center>
+{% if msg %}
+    <div class="container" style="margin-top: 2%;"></div>
+        <div class="alert alert-primary" role="alert">
+            <center>
+                    <h5>{{msg}}</h5>  
+            </center>
+        </div>
     </div>
-</div>
+{% endif %}
 <div class="jumbotron vertical-center" style="margin-top: -5%;">
     <div class="container">
         <div class="row">
@@ -31,7 +32,11 @@
                             <input class="form-control" type="text" name="quantityNo" id="quantityNo" disabled="disabled">
                             <input type="hidden" name="quantity" id='quantity'>
                         </p>
-                        <button class="btn btn-primary" type="submit">save</button>
+                        <p>
+                            <label for="return">Return</label>
+                            <input type="number" name="return" step="any" required="" id="id_return" min="1" class="form-control">
+                        </p>
+                        <input class="btn btn-primary" type="submit" value="Sold" id="id_sold">
                     </div>
                 </form>
             </div>
@@ -63,7 +68,9 @@
 </div>
 
 <script>
-    document.getElementById('id_soldquantity').setAttribute('min', 0);
+    document.getElementById('id_soldquantity').setAttribute('min', 1);
+    document.getElementById('id_soldquantity').removeAttribute('required')
+    document.getElementById('id_return').removeAttribute('required')
     window.setTimeout(function() {
         $(".alert").fadeTo(500, 0).slideUp(500, function(){
             $(this).remove(); 
@@ -74,6 +81,15 @@
         document.getElementById('quantityNo').value = x
         document.getElementById('quantity').value = x.split(' ')[0]
         document.getElementById('id_soldquantity').setAttribute('max',document.getElementById(document.getElementById('id_item').value).children[1].innerHTML.split(' ')[0]) 
+        document.getElementById('id_return').setAttribute('max',document.getElementById(document.getElementById('id_item').value).children[1].innerHTML.split(' ')[0]) 
+    })
+    document.getElementById('id_return').addEventListener("click",function fun1(){
+        document.getElementById('id_soldquantity').value=""
+        document.getElementById('id_sold').value="Return"
+    })
+    document.getElementById('id_soldquantity').addEventListener("click",function fun1(){
+        document.getElementById('id_return').value=""
+        document.getElementById('id_sold').value="Sold"
     })
     document.getElementById('id_soldquantity').classList.add("form-control")
     document.getElementById('id_item').classList.add("form-control")

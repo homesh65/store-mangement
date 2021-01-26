@@ -1,5 +1,9 @@
-{% extends "store/base.html" %}
-
+{% if admin %}
+    {% include "store/baseadmin.html" %}
+{% else %}
+    {% include  "store/base.html" %}
+{% endif %}
+{% load event_tags %}
 {% block content %}
 <style>
     .vertical-center {
@@ -36,18 +40,49 @@
                     </thead>
                     <tbody>
                         {% for i in sale %} 
-                            <tr id="{{i.item}}">
-                                <td>{{i.item}}</td>
-                                <td>{{i.item.item.catagories}}</td>
-                                <td>{{i.soldquantity}}</td>
-                                <td>{{i.created_at}}</td>
-                            </tr>
+                            {% if i.soldquantity > 0  %}
+                                <tr id="{{i.item}}">
+                                    <td>{{i.item}}</td>
+                                    <td>{{i.item.item.catagories}}</td>
+                                    <td>{{i.soldquantity}}</td>
+                                    <td>{{i.created_at}}</td>
+                                </tr>
+                            {% endif %}
                         {% endfor %}
                     </tbody>
                 </table>
             {% endif %}
         </div>
     </div>
+    {% if return %}
+    <div class="row">
+        <div class="col-10 offset-1">
+            <h3 style="text-align: center;">Return Product</h3>
+            <table class="table" style="text-align: center;">
+                <thead>
+                    <tr>
+                    <th scope="col">Items</th>
+                    <th scope="col">catagories</th>
+                    <th scope="col">Returned quantity</th>
+                    <th scope="col">Returned on</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in return %} 
+                        {% if 0 > i.soldquantity %}
+                            <tr id="{{i.item}}">
+                                <td>{{i.item}}</td>
+                                <td>{{i.item.item.catagories}}</td>
+                                <td>{{i.soldquantity |abs }}</td>
+                                <td>{{i.created_at}}</td>
+                            </tr>
+                        {% endif %}  
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
 </div>
 <script>
     

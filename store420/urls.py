@@ -19,13 +19,13 @@ from store import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', views.main, name='main'),
     path('signup/', views.signupuser, name = 'signupuser'),
     path('login/', views.loginuser, name = 'loginuser'),
     path('logout/', views.logoutuser, name = 'logout'),
     path('home/', views.home, name = 'home' ),
     path('stock/', views.stock, name = 'stock'),
     path('sale/', views.sale, name = 'sale' ),
-    path('item/', views.item, name = 'item' ),
     path('updatesale/', views.updatesale, name = 'updatesale' ),
 
 ]

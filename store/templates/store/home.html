@@ -1,4 +1,8 @@
-{% extends "store/base.html" %}
+{% if admin %}
+    {% include "store/baseadmin.html" %}
+{% else %}
+    {% include  "store/base.html" %}
+{% endif %}
 
 {% block content %}
 <div class="container" style="margin-top: 2%;">
@@ -29,4 +33,12 @@
         </div>
     </div>
 </div>
+
+<script>
+    window.setTimeout(function() {
+        $(".alert").fadeTo(500, 0).slideUp(500, function(){
+            $(this).remove(); 
+        });
+    }, 2000);
+</script>
 {% endblock content %}
